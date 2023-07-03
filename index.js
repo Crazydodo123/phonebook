@@ -1,7 +1,8 @@
 const express = require('express')
 const app = express()
 
-app.json-
+app.use(express.json())
+
 
 let entries = [
   { 
@@ -57,7 +58,12 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 
 app.post('/api/persons', (request, response) => {
+  const body = request.body
   
+  body.id = Math.floor(Math.random() * 100000)
+  
+  entries = entries.concat(body)
+  response.json(body)
 })
 
 const PORT = 3001
