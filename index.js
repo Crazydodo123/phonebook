@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.json-
+
 let entries = [
   { 
     "id": 1,
@@ -24,6 +26,14 @@ let entries = [
   }
 ]
 
+app.get('/info', (request, response) => {
+  response
+    .send(`
+      <p>Phonebook has info for ${entries.length} people</p>
+      <p>${Date()}</p>
+    `)
+})
+
 app.get('/api/persons', (request, response) => {
   response.json(entries)
 })
@@ -39,12 +49,15 @@ app.get('/api/persons/:id', (request, response) => {
   }
 })
 
-app.get('/info', (request, response) => {
-  response
-    .send(`
-      <p>Phonebook has info for ${entries.length} people</p>
-      <p>${Date()}</p>
-    `)
+app.delete('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  entries = entries.filter(entry => entry.id !== id)
+  
+  response.status(204).end()
+})
+
+app.post('/api/persons', (request, response) => {
+  
 })
 
 const PORT = 3001
