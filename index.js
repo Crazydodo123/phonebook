@@ -1,4 +1,5 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
 app.use(express.json())
@@ -26,6 +27,7 @@ let entries = [
     "number": "39-23-6423122"
   }
 ]
+
 
 app.get('/info', (request, response) => {
   response
@@ -60,10 +62,26 @@ app.delete('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response) => {
   const body = request.body
   
-  body.id = Math.floor(Math.random() * 100000)
+  const entry = {
+    id: Math.floor(Math.random() * 100000),
+    name: body.name,
+    number: body.number
+  }
   
-  entries = entries.concat(body)
-  response.json(body)
+  if (!body.name || !body.number) {
+    response.status(400).json({
+      error: 'name and/or number missing'
+    })
+  }
+  
+  if (entries.map(entry => entry.name).includes(body.name)) {
+    response.status(400).json({
+      error: 'name must be unique'
+    })
+  }
+  
+  entries = entries.concat(entry)
+  response.json(entry)
 })
 
 const PORT = 3001
