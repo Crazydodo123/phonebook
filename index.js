@@ -1,10 +1,10 @@
 require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
-const app = express()
 const cors = require('cors')
 const Entry = require('./models/entry')
-
+const entry = require('./models/entry')
+const app = express()
 
 app.use(express.static('build'))
 app.use(express.json())
@@ -79,26 +79,20 @@ app.delete('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response) => {
   const body = request.body
   
-  const entry = {
-    id: Math.floor(Math.random() * 100000),
-    name: body.name,
-    number: body.number
-  }
-  
   if (!body.name || !body.number) {
     response.status(400).json({
       error: 'name and/or number missing'
     })
   }
   
-  if (entries.map(entry => entry.name).includes(body.name)) {
-    response.status(400).json({
-      error: 'name must be unique'
-    })
-  }
+  const entry = new Entry({
+    name: body.name,
+    number: body.number,
+  })
   
-  entries = entries.concat(entry)
-  response.json(entry)
+  entry.save().then(savedEntry => {
+    response.json(savedEntry)
+  })
 })
 
 
