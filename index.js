@@ -57,15 +57,16 @@ app.get('/api/persons', (request, response) => {
   })
 })
 
-app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const entry = entries.find(entry => entry.id === id)
-  
-  if (entry) {
-    response.json(entry)
-  } else {
-    response.status(404).end()
-  }
+app.get('/api/persons/:id', (request, response, next) => {
+  Entry.findById(request.params.id)
+    .then(entry => {
+      if (entry) {
+        response.json(entry)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
