@@ -3,6 +3,7 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const Entry = require('./models/entry')
+const entry = require('./models/entry')
 const app = express()
 
 app.use(express.static('build'))
@@ -96,6 +97,20 @@ app.post('/api/persons', (request, response) => {
   })
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+  
+  const entry = {
+    name: body.name,
+    number: body.number
+  }
+  
+  Entry.findByIdAndUpdate(request.params.id, entry, { new:true })
+    .then(updatedEntry => {
+      response.json(updatedEntry)
+    })
+    .catch(error => next(error))
+})
 
 const errorHandler = (error, request, response, next) => {
   console.log(error.message)
