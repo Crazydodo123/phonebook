@@ -21,7 +21,7 @@ const Entry = new mongoose.model('Entry', entrySchema)
 
 if (process.argv.length === 3) {
   console.log('phonebook:')
-  
+
   Entry.find({}).then(result => {
     result.forEach(note => {
       console.log(note.name, note.number)
@@ -33,8 +33,8 @@ if (process.argv.length === 3) {
     name: process.argv[3],
     number: process.argv[4],
   })
-  
-  entry.save().then(result => {
+
+  entry.save().then(() => {
     console.log(`added ${process.argv[3]} number ${process.argv[4]} to phonebook`)
     mongoose.connection.close()
   })
