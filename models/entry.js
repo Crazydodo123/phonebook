@@ -19,7 +19,23 @@ const entrySchema = new mongoose.Schema({
     minLength: 3,
     required: true,
   },
-  number: String,
+  number: {
+    type: String,
+    minLength: 8,
+    validate: {
+      validator: (number) => {
+        for (const letter of number) {
+          if (!"1234567890-".includes(letter)) return false
+        }
+        
+        const parts = number.split('-')
+        
+        if (parts[0].length < 2 || parts[0].length > 3) return false
+        if (parts.length > 2) return false
+      },
+      message: props => {return `${props.value} is not a valid number!`}
+    }
+  },
 })
 
 entrySchema.set('toJSON', {
